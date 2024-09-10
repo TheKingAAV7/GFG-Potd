@@ -10,7 +10,7 @@ using namespace std;
 
 /*
 
-
+Easy
 ******_SELF_SOLVED_******
 
 Priority Queue 
