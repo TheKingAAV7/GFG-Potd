@@ -44,6 +44,7 @@ struct Node {
 
 
 ********_Solved_********
+Easy
 */
 class Solution {
   public:
