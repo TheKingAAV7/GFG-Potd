@@ -110,6 +110,7 @@ struct Node
 /*
 
        Easy -> just use recursive calls and solve it
+       Never use bfs in these type of problems
        
 */      
 
