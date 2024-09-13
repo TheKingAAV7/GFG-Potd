@@ -109,9 +109,11 @@ struct Node
 
 /*
 
-        10
-        /  \
+       Easy -> just use recursive calls and solve it
+       
 */      
+
+
 class Solution {
   public:
     // Function to convert a binary tree into its mirror tree.
