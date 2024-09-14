@@ -11,7 +11,7 @@ using namespace std;
 
 /*
 
-
+Easy
 *********_Solved_***********
 
 
