@@ -18,7 +18,7 @@ using namespace std;
 
 but i guessed the logic correctly
 
-solution watched.....
+solution watched......
 
 
 
