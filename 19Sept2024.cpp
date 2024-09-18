@@ -9,7 +9,7 @@ using namespace std;
 
 
 *************_Solved_*************
-
+Easy
 
 
 */
