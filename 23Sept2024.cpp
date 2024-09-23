@@ -5,7 +5,27 @@ using namespace std;
 
 
 // } Driver Code Ends
+/*
 
+NOT Solved in expected space complexity 
+
+O(1) space and O(N) time complexity solution
+Explanation:
+Let x and y be the desired output elements.
+Calculate the XOR of all the array elements.
+xor1 = arr[0]^arr[1]^arr[2]…..arr[n-1]
+
+XOR the result with all numbers from 1 to n
+xor1 = xor1^1^2^…..^n
+
+In the result xor1, all elements would nullify each other except x and y. All the bits that are 
+set in xor1 will be set in either x or y. So if we take any set bit (We have chosen the rightmost
+set bit in code) of xor1 and divide the elements of the array in two sets – one set of elements with 
+the same bit set and another set with the same bit not set. By doing so, we will get x in one set and
+y in another set. Now if we do XOR of all the elements in 
+the first set, we will get x, and by doing the same in the other set we will get y. 
+
+*/
 class Solution {
   public:
     // Function to find two elements such that their sum is equal to the given number
