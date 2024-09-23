@@ -13,6 +13,7 @@ using namespace std;
 
 Not_Solved
 solution watched
+LPS algorithm
 */
 
 class Solution {
