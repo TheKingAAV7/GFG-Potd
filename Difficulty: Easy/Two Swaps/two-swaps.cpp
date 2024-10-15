@@ -18,17 +18,20 @@ class Solution {
         // 4 3 1 2
         // 1 2 3 4
         int n=arr.size();
-        vector<int>vis(n+1,0);
-        int element_to_look_for,ele;
+      //  vector<int>vis(n+1,0);
+        int element_to_look_for;
         int ans=0;
+        int tmp;
         for(int i=0;i<n;i++){
-           ele=arr[i];
-           if(vis[ele]==0){
-               vis[ele]=1;
-               element_to_look_for=ele-1;
-               while(vis[arr[element_to_look_for]]==0){
-                   vis[arr[element_to_look_for]]=1;
-                   element_to_look_for=arr[element_to_look_for]-1;
+          
+           if(arr[i]>0){
+                tmp=arr[i]-1;
+               arr[i]=0;
+               element_to_look_for=tmp;
+               while(arr[element_to_look_for]>0){
+                   tmp=arr[element_to_look_for]-1;
+                   arr[element_to_look_for]=0;
+                   element_to_look_for=tmp;
                    ans++;
                }
                
