@@ -14,8 +14,7 @@ class Solution {
         
         for(int j=0;j<n;j++){
             for(int i=coins[j];i<=sum;i++){
-                dp[i]+=dp[i-coins
-                [j]];
+                dp[i]+=dp[i-coins[j]];
             }
         }
         
