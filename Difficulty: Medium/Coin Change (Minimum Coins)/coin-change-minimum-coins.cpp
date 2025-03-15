@@ -8,18 +8,18 @@ using namespace std;
 class Solution {
   public:
     int minCoins(vector<int> &coins, int sum) {
-        // code here
         vector<int>dp(sum+1,INT_MAX);
-        dp[0]=0;
         int n=coins.size();
+        dp[0]=0;
         for(int i=1;i<=sum;i++){
             for(int j=0;j<n;j++){
-                if(i-coins[j]>=0 and dp[i-coins[j]]!=INT_MAX) {
+                if(i-coins[j]>=0 and dp[i-coins[j]]!=INT_MAX){
                     dp[i]=min(dp[i],1+dp[i-coins[j]]);
                 }
             }
         }
-        return dp[sum]==INT_MAX?-1:dp[sum];
+        return (dp[sum]==INT_MAX)?-1:dp[sum];
+        
     }
 };
 
