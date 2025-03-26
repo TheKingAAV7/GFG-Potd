@@ -17,11 +17,11 @@ class Solution {
        v.push_back({arr[i],dep[i]});
        maxi=max(dep[i],maxi);
        }
-       vector<int>mp(maxi+1,0);
+       vector<int>mp(maxi+2,0);
        sort(v.begin(),v.end());
        for(int i=0;i<n;i++){
            mp[v[i].first]+=1;
-           if (v[i].second < maxi) 
+          
              mp[v[i].second + 1] -= 1;
 
        }
