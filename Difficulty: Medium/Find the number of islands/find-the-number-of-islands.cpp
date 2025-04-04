@@ -2,47 +2,46 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+
 // } Driver Code Ends
+
 class Solution {
- void dfs(int m ,int n, vector<vector<char>>&g, int i, int j){
-     if(i<0 || i> n-1 || j<0 || j>m-1 || g[i][j]=='0') return ;
-     g[i][j]='0';
-     
-    
-     dfs(m, n, g,i, j+1); // right
-     dfs(m, n, g,i+1, j); // down
-     dfs(m, n, g, i+1, j-1); //  dia l down
-     dfs(m, n, g, i+1, j+1); //  dia r down1
-     dfs(m,n, g, i-1, j); // up
-     dfs(m, n, g,i, j-1 ); // left
-     dfs(m, n, g, i-1,j-1);// dia l u
-     dfs(m, n, g, i-1, j+1);// dia r u
-     
-     
-     return; 
-     
-     
-     
-     
- }
- 
+  private:
+  vector<int>row={-1,1,0,0,1,-1,-1,1};
+  vector<int>col={0,0,-1,1,1,-1,1,-1};
+  void dfs(int i, int j,vector<vector<char>>&grid,vector<vector<int>>&vis,int n, int m){
+      if(i<0 || i>=n || j<0 || j>=m || vis[i][j]) return;
+      vis[i][j]=1;
+      for(int ix=0;ix<8;ix++){
+          int nx= i+row[ix];
+          int ny= j+col[ix];
+          if(nx>=0 and nx<n and ny>=0 and ny<m and vis[nx][ny]==0 and grid[nx][ny]=='L'){
+              dfs(nx,ny,grid,vis,n,m);
+          }
+      }
+      return;
+      
+  }
   public:
-    
-    int numIslands(vector<vector<char>>& grid) {
-            int ans=0;
-            int n=grid.size();
-            int m=grid[0].size();
-            for(int i=0;i<n;i++){
-                for(int j=0;j<m;j++){
-                    if(grid[i][j]=='1'){
-                        dfs(m, n, grid, i, j);
-                        ans++;
-                    }
+    int countIslands(vector<vector<char>>& grid) {
+        int n=grid.size();
+        int m=grid[0].size();
+        vector<vector<int>>vis(n,vector<int>(m,0));
+       
+        int ans=0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(!vis[i][j] and grid[i][j]=='L'){
+                ans++;
+                dfs(i,j,grid,vis,n,m);
                 }
             }
+        }
         return ans;
+        
     }
 };
+
 
 //{ Driver Code Starts.
 int main() {
@@ -58,8 +57,11 @@ int main() {
             }
         }
         Solution obj;
-        int ans = obj.numIslands(grid);
+        int ans = obj.countIslands(grid);
         cout << ans << '\n';
+
+        cout << "~"
+             << "\n";
     }
     return 0;
 }
