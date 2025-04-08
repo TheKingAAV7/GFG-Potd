@@ -7,30 +7,67 @@ using namespace std;
 
 class Solution {
   private:
-  bool dfs(int node,vector<int>&vis,vector<vector<int>>&adj,int &d){
-      if(node==d) return true;
+   void f1(int node, vector<int>&vis,vector<int>&tim,vector<vector<int>>&adj,int parent){
       vis[node]=1;
-      bool ans=false;
+      for(auto it:adj[node]){
+         if(vis[it]==0){
+            f1(it,vis,tim,adj,node);
+            tim[node]=min(tim[node],tim[it]);
+         }
+         if(it!=parent){
+            tim[node]=min(tim[node],tim[it]);
+         }
+      }
+      return;
+   }
+  void dfs(int node,vector<int>&vis,vector<int>&tim,vector<vector<int>>&adj,int &timer,vector<int>&dis,int parent){
+      
+      vis[node]=1;
+      tim[node]=dis[node]=timer;
+      ++timer;
       for(auto it:adj[node] ){
+          if(it==parent) continue;
           if(vis[it]==0){
-              ans|=dfs(it,vis,adj,d);
+             dfs(it,vis,tim,adj,timer,dis,node);
+             tim[node]=min(tim[it],tim[node]);
+          }
+          else{
+          tim[node]=min(tim[it],tim[node]);
           }
       }
-      return ans;
+      return;
   }
   public:
     bool isBridge(int n, vector<vector<int>> &edges, int c, int d) {
        vector<vector<int>>adj(n);
        for(auto it:edges){
-           if(!((it[0]==c and it[1]==d) || (it[0]==d and it[1]==c)) ){
                adj[it[0]].push_back(it[1]);
                adj[it[1]].push_back(it[0]);
-           }
        }
-       vector<int>vis(n,0);
-       bool f=dfs(c,vis,adj,d);
-       if(f) return false;
-       return true;
+       vector<int>vis(n,0),dis(n,0);
+       int timer=0;
+       vector<int>tim(n,INT_MAX);
+       for(int i=0;i<n;i++){
+          if(vis[i]==0){
+       dfs(i,vis,tim,adj,timer,dis,-1);
+          }
+       }
+       
+      //   for(auto it:tim) cout<<it<<" ";
+      // cout<<endl;  
+   
+   
+       fill(vis.begin(),vis.end(),0);
+        for(int i=0;i<n;i++){
+         if(vis[i]==0){
+           
+         f1(i,vis,tim,adj,-1);
+      }
+        } 
+      
+      // for(auto it:tim) cout<<it<<" ";
+      // cout<<endl;      
+       return tim[c]>tim[d] || tim[d]>tim[c];
        
         
     }
