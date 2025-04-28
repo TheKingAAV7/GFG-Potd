@@ -7,41 +7,41 @@ using namespace std;
 
 class Solution {
   private:
-  vector<int>rank,parent;
+  vector<int>parent, rank;
+  int find(int x){
+      if(parent[x]==x) return x;
+      return parent[x]=find(parent[x]);
+  }
   
-  bool uni(int a,int b){
-      int parx=findpar(a);
-      int pary=findpar(b);
+  bool unite(int x, int y){
+      int parx=find(x);
+      int pary=find(y);
+      
       if(parx==pary){
-          return true;
+          return false;
       }
       if(rank[parx]>rank[pary]){
           parent[pary]=parx;
       }
-      else if(rank[pary]>rank[parx]){
+      else if(rank[parx]<rank[pary]){
           parent[parx]=pary;
       }
       else{
           parent[pary]=parx;
-          rank[parx]++;
+          rank[pary]++;
       }
-      return false;
-  }
-  
-  int findpar(int a){
-      if(parent[a]==a) return a;
-      return parent[a]=findpar(parent[a]);
+      return true;
   }
   public:
     bool isCycle(int n, vector<vector<int>>& edges) {
-    parent.resize(n,0);
-    rank.resize(n,0);
-    iota(parent.begin(),parent.end(),0);
-    for(auto it:edges){
-        bool tmp=uni(it[0],it[1]);
-        if(tmp) return true;
-    }
-    return false;
+        parent.resize(n+1,0);
+        rank.resize(n+1,0);
+        for(int i=0;i<=n;i++) parent[i]=i;
+        for(auto it:edges){
+        bool tmp=unite(it[0],it[1]);
+        if(!tmp) return true;
+        }
+        return false;
         
     }
 };
