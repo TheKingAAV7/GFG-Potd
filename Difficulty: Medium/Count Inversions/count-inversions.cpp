@@ -5,120 +5,68 @@ using namespace std;
 
 // } Driver Code Ends
 
-#include <ext/pb_ds/tree_policy.hpp>
-#include <ext/pb_ds/assoc_container.hpp>
-
-using namespace std;
-namespace __gnu_pbds{
-          typedef tree<int,
-                       null_type,
-                       less_equal<int>,
-                       rb_tree_tag,
-                       tree_order_statistics_node_update> ordered_set;
-}
-using namespace __gnu_pbds;
-
-
-
-
-
-
-void Insert(ordered_set &s,int x){ //this function inserts one more occurrence of (x) into the set.
-
-     s.insert(x);
-
-}
-
-
-bool Exist(ordered_set &s,int x){ //this function checks weather the value (x) exists in the set or not.
-
-     if((s.upper_bound(x))==s.end()){
-        return 0;
-     }
-     return ((*s.upper_bound(x))==x);
-
-}
-
-
-void Erase(ordered_set &s,int x){ //this function erases one occurrence of the value (x).
-
-     if(Exist(s,x)){
-        s.erase(s.upper_bound(x));
-     }
-
-}
-
-
-int FirstIdx(ordered_set &s,int x){ //this function returns the first index of the value (x)..(0 indexing).
-
-    if(!Exist(s,x)){
-        return -1;
+int merge(vector<int>&arr,int lef, int mid, int rig){
+    int res=0;
+    int lefsz=mid-lef+1;
+    int rigsz=rig-mid;
+    vector<int>left(lefsz),right(rigsz);
+    
+    for(int i=0;i<lefsz;i++){
+        left[i]=arr[lef+i];
     }
-    return (s.order_of_key(x));
-
-}
-
-
-int Value(ordered_set &s,int idx){ //this function returns the value at the index (idx)..(0 indexing).
-
-   return (*s.find_by_order(idx));
-
-}
-
-
-int LastIdx(ordered_set &s,int x){ //this function returns the last index of the value (x)..(0 indexing).
-
-    if(!Exist(s,x)){
-        return -1;
+    for(int i=0;i<rigsz;i++){
+        right[i]=arr[mid+i+1];
     }
-    if(Value(s,(int)s.size()-1)==x){
-        return (int)(s.size())-1;
+    int i=0, j=0;
+    int pos=lef;
+    while(i<lefsz and j<rigsz){
+        if(left[i]<=right[j]){
+            arr[pos]=left[i];
+            i++;
+            pos++;
+        }
+        else{
+            arr[pos]=right[j];
+            j++;
+            pos++;
+            res+=(lefsz-i);
+        }
     }
-    return FirstIdx(s,*s.lower_bound(x))-1;
-
+    
+    while(i<lefsz){
+        arr[pos]=left[i];
+        pos++;
+        i++;
+    }
+    while(j<rigsz){
+        arr[pos]=right[j];
+        pos++;
+        j++;
+    }
+    return res;
 }
 
-
-int Count(ordered_set &s,int x){ //this function returns the number of occurrences of the value (x).
-
-     if(!Exist(s,x)){
-        return 0;
-     }
-     return LastIdx(s,x)-FirstIdx(s,x)+1;
-
+int mergesort(vector<int>&arr, int lef, int rig){
+    if(lef>=rig) return 0;
+    int res=0;
+    int mid=(lef+rig)/2;
+    res+=mergesort(arr,lef,mid);
+    res+=mergesort(arr,mid+1,rig);
+    
+    res+=merge(arr,lef,mid,rig);
+    return res;
 }
-
-
-void Clear(ordered_set &s){ //this function clears all the elements from the set.
-
-     s.clear();
-
-}
-
-
-int Size(ordered_set &s){ //this function returns the size of the set.
-
-     return (int)(s.size());
-
-}
-
-
-
 
 class Solution {
   public:
     // Function to count inversions in the array.
     int inversionCount(vector<int> &arr) {
-       ordered_set s;
-       int n=arr.size();
-       int ans=0;
-       for(int i=n-1;i>=0;i--){
-            Insert(s,arr[i]);
-            ans+=FirstIdx(s,arr[i]);
-       }
-       return ans;
+        int n=arr.size();
+        return mergesort(arr,0,n-1);
+        
     }
 };
+
 
 //{ Driver Code Starts.
 
