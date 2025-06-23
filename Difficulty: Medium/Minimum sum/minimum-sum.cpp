@@ -1,63 +1,62 @@
-//{ Driver Code Starts
-#include <bits/stdc++.h>
-using namespace std;
+class Solution {
 
-
-// } Driver Code Ends
-// User function template for C++
-
-class Solution {   // 0 3 4 5 7        047   035
   public:
-  //  0 4 7       35
     string minSum(vector<int> &arr) {
-        sort(begin(arr),end(arr));
-        int carry = 0, i, n = arr.size();
-        string ans;
-        
-        for(i=n-1;i>=1;i-=2){
-            int sum = arr[i]+arr[i-1]+carry;
-            ans+=to_string(sum%10);
-            carry=sum/10;
-        }
-        
-        if(i == 0){
-            int sum = arr[i]+carry;
-            ans+=to_string(sum%10);
-            carry=sum/10;
-        }
-        
-        if(carry)ans+=to_string(carry);
-        while(ans.back() == '0')ans.pop_back();
-        
-        reverse(begin(ans),end(ans));
-        
-        return ans;
+        int n=arr.size();
+      sort(arr.begin(),arr.end());
+      string a="",b="";
+      for(int i=0;i<n;i++){
+          if(i%2==0) a.push_back(char(arr[i]+'0'));
+          else b.push_back(char(arr[i]+'0'));
+      }
+      auto add=[&](string &a, string &b)->string{
+          string ans="";
+          int n=a.length(),m=b.length();
+          int carry=0;
+          int i=n-1,j=m-1;
+          while(i>=0 and j>=0){
+              int cur=(a[i]-'0'+ b[j]-'0')+carry;
+              ans.push_back((cur%10)+'0');
+              if(cur>9){   
+                  cur/=10;
+                  carry=cur;
+              }
+              else carry=0;
+              i--;
+              j--;
+          }
+          while(i>=0){
+              int cur= (a[i]-'0')+carry;
+              ans.push_back((cur%10)+'0');
+              if(cur>9){   
+                  cur/=10;
+                  carry=cur;
+              }
+              else carry=0;
+              i--;
+          }
+          while(j>=0){
+              int cur= (b[j]-'0')+carry;
+              ans.push_back((cur%10)+'0');
+              if(cur>9){   
+                  cur/=10;
+                  carry=cur;
+              }
+              else carry=0;
+              j--;
+          }
+          if(carry!=0){
+              ans.push_back(char(carry+'0'));
+          }
+
+          while(ans.size()>0 and ans.back()=='0'){
+              ans.pop_back();
+          } 
+          if(ans=="") return "0";
+          reverse(ans.begin(),ans.end());
+          return ans;
+      };
+      string ans=add(a,b);
+      return ans;
     }
 };
-
-
-//{ Driver Code Starts.
-
-int main() {
-    int t;
-    cin >> t;
-    cin.ignore();
-    while (t--) {
-        vector<int> a;
-        string input;
-        getline(cin, input);
-        stringstream ss(input);
-        int number;
-        while (ss >> number) {
-            a.push_back(number);
-        }
-
-        Solution ob;
-        string ans = ob.minSum(a);
-        cout << ans << endl;
-        cout << "~" << endl;
-    }
-    return 0;
-}
-
-// } Driver Code Ends
