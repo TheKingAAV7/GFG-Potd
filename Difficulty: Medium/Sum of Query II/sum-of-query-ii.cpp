@@ -19,10 +19,10 @@ class Solution {
           return segtree[i];
       }
       int mid=(lef+rig)/2;
-      if(lef<=left and right<=mid){
+      if(right<=mid){
           return sm(2*i+1,lef,mid,left,right);
       }
-      else if((mid+1)<=left  and right<=rig){
+      else if((mid+1)<=left ){
           return sm(2*i+2,mid+1,rig,left,right);
       }
       int le=sm(2*i+1,lef,mid,left,mid);
