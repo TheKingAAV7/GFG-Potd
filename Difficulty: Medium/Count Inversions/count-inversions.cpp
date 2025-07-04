@@ -1,95 +1,50 @@
-//{ Driver Code Starts
-#include <bits/stdc++.h>
-using namespace std;
 
-
-// } Driver Code Ends
-
-int merge(vector<int>&arr,int lef, int mid, int rig){
-    int res=0;
-    int lefsz=mid-lef+1;
-    int rigsz=rig-mid;
-    vector<int>left(lefsz),right(rigsz);
-    
-    for(int i=0;i<lefsz;i++){
-        left[i]=arr[lef+i];
-    }
-    for(int i=0;i<rigsz;i++){
-        right[i]=arr[mid+i+1];
-    }
-    int i=0, j=0;
-    int pos=lef;
-    while(i<lefsz and j<rigsz){
-        if(left[i]<=right[j]){
-            arr[pos]=left[i];
-            i++;
-            pos++;
-        }
-        else{
-            arr[pos]=right[j];
-            j++;
-            pos++;
-            res+=(lefsz-i);
-        }
-    }
-    
-    while(i<lefsz){
-        arr[pos]=left[i];
-        pos++;
-        i++;
-    }
-    while(j<rigsz){
-        arr[pos]=right[j];
-        pos++;
-        j++;
-    }
-    return res;
-}
-
-int mergesort(vector<int>&arr, int lef, int rig){
-    if(lef>=rig) return 0;
-    int res=0;
-    int mid=(lef+rig)/2;
-    res+=mergesort(arr,lef,mid);
-    res+=mergesort(arr,mid+1,rig);
-    
-    res+=merge(arr,lef,mid,rig);
-    return res;
-}
 
 class Solution {
+  private:
+  vector<int>segtree;
+  void up(int idx, int lef, int rig, int ind, int val){
+      if(lef==rig){
+          segtree[idx]+=val;
+          return;
+      }
+      int mid=(lef+rig)>>1;
+      if(ind<=mid) up(2*idx+1,lef,mid,ind,val);
+      else up(2*idx+2,mid+1,rig,ind,val);
+      segtree[idx]= segtree[2*idx+1]+segtree[2*idx+2];
+      return;
+  }
+  int query(int idx, int lef, int rig, int l ,int r){
+      if (l > r)  
+        return 0;
+
+      if(lef==l and rig==r) return segtree[idx];
+      int mid=(lef+rig)>>1;
+      if(r<=mid){
+          return query(2*idx+1,lef, mid, l, r);
+      }
+      else if((mid+1)<=l) return query(2*idx+2,mid+1,rig,l,r);
+      else{
+          int left=query(2*idx+1,lef,mid,l,mid);
+          int right=query(2*idx+2,mid+1,rig,mid+1,r);
+          return left+right;
+      }
+      return 0;
+      
+  }
   public:
     // Function to count inversions in the array.
     int inversionCount(vector<int> &arr) {
         int n=arr.size();
-        return mergesort(arr,0,n-1);
+        int ans=0;
+        int maxi=*max_element(arr.begin(),arr.end());
+        segtree.resize(maxi*4,0);
+        for(int i=0;i<n;i++){
+            int l=0,r=arr[i]-1;
+            ans+=query(0,0,maxi,arr[i]+1,maxi);
+            up(0,0,maxi,arr[i],1);
+        }
         
+        return  ans;
     }
 };
-
-
-//{ Driver Code Starts.
-
-int main() {
-
-    int T;
-    cin >> T;
-    cin.ignore();
-    while (T--) {
-        int n;
-        vector<int> a;
-        string input;
-        getline(cin, input);
-        stringstream ss(input);
-        int num;
-        while (ss >> num)
-            a.push_back(num);
-        Solution obj;
-        cout << obj.inversionCount(a) << endl;
-        cout << "~" << endl;
-    }
-
-    return 0;
-}
-
-// } Driver Code Ends
