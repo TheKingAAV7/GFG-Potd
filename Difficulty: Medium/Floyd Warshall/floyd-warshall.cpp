@@ -18,7 +18,7 @@ class Solution {
         for(int via=0;via<n;via++){
             for(int i=0;i<n;i++){
                 for(int j=0;j<n;j++){
-                    if(dist[i][via]<INF and dist[via][j]<INF){
+                    if(dist[i][via]!=INF and dist[via][j]!=INF){
                         int newdist=dist[i][via] + dist[via][j];
                         if(newdist<dist[i][j]){
                             dist[i][j]=newdist;
