@@ -1,72 +1,45 @@
-//{ Driver Code Starts
-// Initial Template for C++
-
-#include <bits/stdc++.h>
-using namespace std;
-
-
-// } Driver Code Ends
-
-
 class Solution {
-public:
-    string decodedString(string &s) {
-        int n = s.length();
-        if(n == 0) return s; // If the string is empty, return it as is.
-
-        stack<int> st; // Stack to store the numbers (repetition counts).
-        stack<string> str; // Stack to store the strings.
-        string temp = ""; // Temporary string to build the current string.
-        int num = 0; // Temporary variable to build the current number.
-
-        for(int i = 0; i < n; i++) {
+  public:
+    string f(string &s,int lef, int rig, int &n,vector<int>&pos){
+        
+        string ans="";
+        for(int i=lef;i<=rig;i++){
             if(isdigit(s[i])) {
-                // If the character is a digit, build the number.
-                num = num * 10 + (s[i] - '0');
-            }
-            else if(s[i] == '[') {
-                // If we encounter an opening bracket, push the current number and string onto the stacks.
-                st.push(num);
-                num = 0; // Reset the number.
-                str.push(temp);
-                temp = ""; // Reset the string.
-            }
-            else if(s[i] == ']') {
-                // If we encounter a closing bracket, pop the number and repeat the current string.
-                int k = st.top();
-                st.pop();
-                string currentString = str.top();
-                str.pop();
-                for(int j = 1; j <= k; j++) {
-                    currentString += temp; // Repeat the string k times.
+                int num=0;
+                while(i<=rig and isdigit(s[i])){
+                    num=num*10+(s[i]-'0');
+                    i++;
                 }
-                temp = currentString; // Update the current string.
+                int righti=pos[i];
+                string mid=f(s,i+1,righti-1,n,pos);
+                while(num--) ans+=mid;
+                i=righti;
             }
-            else {
-                // If it's a character, append it to the current string.
-                temp += s[i];
+            else{
+                ans.push_back(s[i]);
             }
+            
         }
-        return temp; // Return the decoded string.
+        return ans;
+    }
+    string decodedString(string &s) {
+        // code here
+        string ans="";
+        int n=s.length();
+         vector<int>pos(n,-1);
+         vector<int>st;
+         for(int i=0;i<n;i++){
+             if(s[i]=='[') st.push_back(i);
+             else if(s[i]==']'){
+                 int va=st.back();
+                 st.pop_back();
+                 pos[va]=i;
+             }
+         }
+        //  for(int i:pos) cout<<i<<" ";
+        //  cout<<endl;
+        int lef=0,rig=s.length()-1;
+       // return "";
+        return f(s,lef,rig,n,pos);
     }
 };
-
-
-//{ Driver Code Starts.
-
-int main() {
-    int t;
-    cin >> t;
-    while (t--) {
-        string s;
-        cin >> s;
-
-        Solution ob;
-        cout << ob.decodedString(s) << "\n";
-
-        cout << "~"
-             << "\n";
-    }
-    return 0;
-}
-// } Driver Code Ends
