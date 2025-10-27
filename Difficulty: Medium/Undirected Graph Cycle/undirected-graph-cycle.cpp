@@ -1,80 +1,41 @@
-//{ Driver Code Starts
-#include <bits/stdc++.h>
-using namespace std;
-
-
-// } Driver Code Ends
-
 class Solution {
-  private:
-  vector<int>parent, rank;
-  int find(int x){
-      if(parent[x]==x) return x;
-      return parent[x]=find(parent[x]);
+  public:
+  vector<int>rank;
+  vector<int>par;
+
+  int findpar(int node){
+      if(par[node]==node) return node;
+      return par[node]=findpar(par[node]);
   }
   
-  bool unite(int x, int y){
-      int parx=find(x);
-      int pary=find(y);
-      
-      if(parx==pary){
-          return false;
-      }
+  bool uni(int x, int y){
+      int parx=findpar(x);
+      int pary=findpar(y);
+      if(parx==pary) return true;
       if(rank[parx]>rank[pary]){
-          parent[pary]=parx;
+          par[pary]=parx;
       }
-      else if(rank[parx]<rank[pary]){
-          parent[parx]=pary;
+      else if(rank[pary]>rank[parx]){
+          par[parx]=pary;
       }
       else{
-          parent[pary]=parx;
-          rank[pary]++;
+          par[pary]=parx;
+          rank[parx]++;
       }
-      return true;
+      return false;
   }
-  public:
     bool isCycle(int n, vector<vector<int>>& edges) {
-        parent.resize(n+1,0);
-        rank.resize(n+1,0);
-        for(int i=0;i<=n;i++) parent[i]=i;
+        rank.resize(n,0);
+        par.resize(n);
+        
+        iota(par.begin(),par.end(),0);
         for(auto it:edges){
-        bool tmp=unite(it[0],it[1]);
-        if(!tmp) return true;
+            int x=it[0],y=it[1];
+            if(uni(x,y)) return true;
         }
         return false;
         
+        
+        
     }
 };
-
-
-//{ Driver Code Starts.
-
-int main() {
-    int tc;
-    cin >> tc;
-    cin.ignore();
-    while (tc--) {
-        int V, E;
-        cin >> V >> E;
-        cin.ignore();
-        vector<vector<int>> edges;
-        for (int i = 1; i <= E; i++) {
-            int u, v;
-            cin >> u >> v;
-            edges.push_back({u, v});
-        }
-
-        Solution obj;
-        bool ans = obj.isCycle(V, edges);
-        if (ans)
-            cout << "true\n";
-        else
-            cout << "false\n";
-
-        cout << "~"
-             << "\n";
-    }
-    return 0;
-}
-
-// } Driver Code Ends
