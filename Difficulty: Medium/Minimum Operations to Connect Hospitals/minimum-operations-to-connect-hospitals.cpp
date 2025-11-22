@@ -1,5 +1,40 @@
 
 
+
+vector<int>parent,rank1;
+
+
+int findpar(int node){
+    if(parent[node]==node) return node;
+    return parent[node]= findpar(parent[node]);
+}
+
+void uni(int x, int y){
+    int parx= findpar(x);
+    int pary= findpar(y);
+    if(parx==pary) return;
+    
+    if(rank1[parx]>rank1[pary]){
+        parent[pary]= parx;
+    }
+    else if(rank1[pary]>rank1[parx]){
+        parent[parx]= pary;
+    }
+    else{
+        parent[pary]= parx;
+        rank1[parx]++;
+    }
+    return;
+}
+
+int f(){
+    int n=parent.size();
+    int cnt=0;
+    for(int i=0;i<n;i++){
+        if(parent[i]==i) cnt++;
+    }
+    return cnt;
+}
 class Solution {
   public:
     int minConnect(int n, vector<vector<int>>& edges) {
@@ -20,29 +55,22 @@ class Solution {
      if(sz<n-1) return -1;
      
      int cnt=0;
-     vector<vector<int>>adj(n);
+     
+     
+     
+     parent.resize(n,0);
+     rank1.resize(n,0);
+     iota(parent.begin(),parent.end(),0);
+     
      for(auto it:edges){
-         adj[it[0]].push_back(it[1]);
-         adj[it[1]].push_back(it[0]);
+         uni(it[0],it[1]);
      }
      
-     vector<int>vis(n,0);
+     cnt= f();
      
-     function<void(int)>f=[&](int node)-> void{
-       
-       vis[node]=1;
-       for(auto it: adj[node]){
-           if(!vis[it]) f(it);
-       }
-       return;
-         
-     };
-     for(int i=0;i<n;i++){
-         if(!vis[i]){
-             cnt++;
-             f(i);
-         }
-     }
+     
+     
+     
      
      return cnt-1;
         
