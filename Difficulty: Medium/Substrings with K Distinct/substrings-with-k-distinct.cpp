@@ -1,30 +1,29 @@
 class Solution {
   public:
     int countSubstr(string& s, int k) {
-        int n=s.length();
-        int cnt1=0,cnt2=0;
-        int l=0;
-        unordered_map<int,int>mp;
-        for(int i=0;i<n;i++){
-            mp[s[i]]++;
-            while(mp.size()>=k){
-                cnt1+=(n-i);
-                mp[s[l]]--;
-                if(mp[s[l]]==0) mp.erase(s[l]);
-                l++;
+        // code here
+        int n=s.size();
+        auto f=[&] (int  k) ->int{
+            int ans=0;
+          //  unordered_map<char,int> m;
+         //   map<char,int> m;
+          vector<int> m(26,0);
+          int cnt=0;
+            for(int i=0,j=0;i<n;i++){
+                if(m[s[i] - 'a'] == 0) cnt++;
+                m[s[i]-'a']++;
+                
+                while(cnt >= k){
+                    ans+=n-i;
+                    m[s[j] - 'a']--;
+                    if(m[s[j] - 'a'] == 0) cnt--;
+                   
+
+                    j++;
+                }
             }
-        }
-        l=0;
-        mp.clear();
-        for(int i=0;i<n;i++){
-            mp[s[i]]++;
-            while(mp.size()>k){
-                cnt2+=(n-i);
-                mp[s[l]]--;
-                if(mp[s[l]]==0) mp.erase(s[l]);
-                l++;
-            }
-        }
-        return cnt1-cnt2;
+            return ans ;
+        };
+        return f(k)-f(k+1);
     }
 };
