@@ -1,20 +1,20 @@
 class Solution {
   public:
-    vector<int> findGreater(vector<int>& arr) {
-        map<int,int>mp;
-        
-        int n=arr.size();
+    vector<int> nextFreqGreater(vector<int>& arr) {
+        // code here
+        int n= arr.size();
         vector<int>ans(n,-1);
-        for(int i:arr) mp[i]++;
-        stack<int>st;
+        map<int,int>mp;
+        for(int &i:arr) mp[i]++;
+        
+        stack<array<int,2>>st;
         for(int i=0;i<n;i++){
-         while(!st.empty() and mp[arr[i]]>mp[arr[st.top()]]){
-             ans[st.top()]=arr[i];
-             st.pop();
-         }
-         st.push(i);
+            while(!st.empty() and st.top()[1]<mp[arr[i]]){
+                ans[st.top()[0]]=arr[i];
+                st.pop();
+            }
+            st.push({i,mp[arr[i]]});
         }
         return ans;
-        
     }
 };
