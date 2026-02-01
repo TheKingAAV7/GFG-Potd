@@ -1,33 +1,55 @@
 class Solution {
-public:
+  public:
     int maxCircularSum(vector<int> &arr) {
-        // Handle the case for non-wrapping subarray
-        int curr_max = arr[0];
-        int max_so_far = arr[0];
+        // code here
+        int m=arr.size();
+        int n=2* m;
+        for(int i=0;i<n;i++)arr.push_back(arr[i]);
         
-        // Handle the case for wrapping subarray
-        int curr_min = arr[0];
-        int min_so_far = arr[0];
-        
-        int total_sum = arr[0];
-        
-        for (int i = 1; i < arr.size(); i++) {
-            total_sum += arr[i];
-            
-            // Kadane's algorithm for maximum subarray
-            curr_max = max(arr[i], curr_max + arr[i]);
-            max_so_far = max(max_so_far, curr_max);
-            
-            // Kadane's algorithm for minimum subarray
-            curr_min = min(arr[i], curr_min + arr[i]);
-            min_so_far = min(min_so_far, curr_min);
+        int sm=0;
+        vector<int>pref(n,0);
+        for(int i=0;i<n;i++){
+            sm+=arr[i];
+            pref[i]=sm;
         }
         
-        // If all elements are negative, return the maximum element
-        if (max_so_far < 0)
-            return max_so_far;
-            
-        // Return the maximum of non-circular and circular sums
-        return max(max_so_far, total_sum - min_so_far);
+        int K=25;
+        vector<vector<int>>dp(n,vector<int>(K,INT_MIN));
+        for(int i=0;i<n;i++) dp[i][0]=pref[i];
+        
+        for(int k=1;k<K;k++){
+            for(int i=0;i+(1<<(k-1))<n;i++){
+             dp[i][k]= max(dp[i][k-1],dp[i+(1<<(k-1))][k-1]);
+            }
+        }
+        int ans=INT_MIN;
+        
+        auto f=[&](int l, int r)->int{
+            int val= r-l+1;
+            int idx=l;
+            int pos=0;
+            int tans=INT_MIN;
+            while(val>0){
+                if(val&1){
+                    tans=max(tans,dp[idx][pos]);
+                    idx+=(1<<pos);
+                }
+                pos++;
+                val>>=1;
+            }
+            return tans;
+        };
+        
+        
+        for(int i=0;i+m-1<n;i++){
+            int l=i;
+            int r=i+m-1;
+            int mx= f(l,r);
+            int lefsm= (i-1>=0)?pref[i-1]:0;
+            int cur= mx-lefsm;
+            ans=max(ans,cur);
+        }
+        return ans;
+        
     }
 };
