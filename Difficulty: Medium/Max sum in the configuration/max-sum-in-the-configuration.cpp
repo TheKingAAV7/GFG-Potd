@@ -1,23 +1,25 @@
 class Solution {
-public:
+  public:
     int maxSum(vector<int> &arr) {
-        int n = arr.size();
-        
-        long long arrSum = 0;
-        long long currVal = 0;
-        
-        for(int i = 0; i < n; i++) {
-            arrSum += arr[i];
-            currVal += (long long)i * arr[i];
+        // code here
+        int n=arr.size();
+        map<int,int>mp;
+        int sm=0;
+        int psm=0;
+        for(int i=0;i<n;i++){
+            sm+=arr[i];
+            mp[i]=sm;
+            psm+=arr[i]*i;
         }
-        
-        long long res = currVal;
-        
-        for(int k = 1; k < n; k++) {
-            currVal = currVal + arrSum - (long long)n * arr[n - k];
-            res = max(res, currVal);
+        int ans=psm;
+        for(int k=1;k<n;k++){
+            // find diff; 
+            // sum of first n-k
+            int fsm= mp[n-k-1];
+            int rsm= sm-fsm;
+            int diff= k*(fsm) - (n-k)*(rsm);
+            ans=max(ans,diff+psm);
         }
-        
-        return res;
+        return ans;
     }
 };
