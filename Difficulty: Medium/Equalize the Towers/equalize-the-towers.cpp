@@ -1,33 +1,48 @@
+#define ll long long
 class Solution {
   public:
-    int minCost(vector<int>& h, vector<int>& c) {
-        int n=h.size();
-        long long ans=LLONG_MAX;
-        vector<pair<long long,long long>>v;
-        for(int i=0;i<n;i++) v.push_back({h[i],c[i]});
+    int minCost(vector<int>& ht, vector<int>& c) {
+        // code here
+        vector<array<ll,2>>v;
+        int n=ht.size();
+        
+        for(int i=0;i<n;i++) v.push_back({ht[i],c[i]});
+        
         sort(v.begin(),v.end());
-        vector<long long>pref(n,0),csm(n,0);
-        long long sm=0;
-        long long sm1=0;
-        for(int i=n-1;i>=0;i--){
-            long long tmp=v[i].first*v[i].second;
-            sm+=tmp;
-            sm1+=v[i].second;
-            pref[i]=sm;
-            csm[i]=sm1;
-        }
-        long long lefsm=0,lefsm1=0;
+        
+        vector<array<ll,2>>pref(n);
+        ll prodsm=0;
+        ll costsm=0;
         for(int i=0;i<n;i++){
-            lefsm1+=v[i].second;
-            lefsm+=(v[i].first*v[i].second);
+            prodsm+=(v[i][0]*v[i][1]);
+            costsm+=v[i][1];
+            pref[i]={prodsm,costsm};
+        }
+        prodsm=0;
+        costsm=0;
+        ll ans=LLONG_MAX;
+        for(int i=n-1;i>=0;i--){
             
-            long long right=(pref[i]-(v[i].first*csm[i]));
-            long long left=(v[i].first*lefsm1)-(lefsm);
-
-            ans=min(ans,left+right);
+            ll lefsm,rigsm;
+            lefsm=rigsm=0;
+            if(i-1>=0){
+            ll lefcsm= pref[i-1][1];
+            ll lefprodsm=pref[i-1][0];
+            lefsm= v[i][0]*lefcsm - lefprodsm;
+            }
+            
+            
+            ll rigcsm= costsm;
+            ll rigprodsm= prodsm;
+            rigsm= rigprodsm- v[i][0]*rigcsm;
+            
+            ll curval= lefsm+rigsm;
+            ans= min(ans,curval);
+            prodsm+=(v[i][0]*v[i][1]);
+            costsm+=v[i][1];
             
         }
-        return (int)ans;
+        return ans;
         
     }
 };
