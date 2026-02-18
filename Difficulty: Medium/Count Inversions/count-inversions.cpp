@@ -1,50 +1,49 @@
 
-
-class Solution {
-  private:
-  vector<int>segtree;
-  void up(int idx, int lef, int rig, int ind, int val){
-      if(lef==rig){
-          segtree[idx]+=val;
-          return;
-      }
-      int mid=(lef+rig)>>1;
-      if(ind<=mid) up(2*idx+1,lef,mid,ind,val);
-      else up(2*idx+2,mid+1,rig,ind,val);
-      segtree[idx]= segtree[2*idx+1]+segtree[2*idx+2];
-      return;
+class FenwickTree{
+  public:
+  vector<int>bit;
+  int n;
+  FenwickTree(int n){
+      this->n=n;
+      bit.resize(n,0);
+      // t(i) = answer for [g(i),i]
+        //                    [g(g(i-1)),g(i-1)]
   }
-  int query(int idx, int lef, int rig, int l ,int r){
-      if (l > r)  
-        return 0;
-
-      if(lef==l and rig==r) return segtree[idx];
-      int mid=(lef+rig)>>1;
-      if(r<=mid){
-          return query(2*idx+1,lef, mid, l, r);
+  void increase(int idx, int val){
+      for(;idx<n;idx= idx|(idx+1)){
+          bit[idx]+=val;
       }
-      else if((mid+1)<=l) return query(2*idx+2,mid+1,rig,l,r);
-      else{
-          int left=query(2*idx+1,lef,mid,l,mid);
-          int right=query(2*idx+2,mid+1,rig,mid+1,r);
-          return left+right;
-      }
-      return 0;
       
   }
+  int sum(int r){
+      int sm=0;
+      while(r>=0){
+          sm+=bit[r];
+          r=(r&(r+1))-1;
+      }
+      return sm;
+  }
+  
+  int query(int l, int r){
+      return sum(r)-sum(l-1);
+  }
+};
+class Solution {
   public:
-    // Function to count inversions in the array.
     int inversionCount(vector<int> &arr) {
+        // Code Here
         int n=arr.size();
-        int ans=0;
-        int maxi=*max_element(arr.begin(),arr.end());
-        segtree.resize(maxi*4,0);
-        for(int i=0;i<n;i++){
-            int l=0,r=arr[i]-1;
-            ans+=query(0,0,maxi,arr[i]+1,maxi);
-            up(0,0,maxi,arr[i],1);
-        }
+        int MAXI=1e4+1;
+        FenwickTree ft= FenwickTree(MAXI);
+        // count the bigger on the left
         
-        return  ans;
+        int ans=0;
+        for(int i=0;i<n;i++){
+            int cnt= ft.query(arr[i]+1,1e4);
+            ans+=cnt;
+            ft.increase(arr[i],1);
+            
+        }
+        return ans;
     }
 };
