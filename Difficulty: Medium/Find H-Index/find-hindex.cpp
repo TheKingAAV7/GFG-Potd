@@ -1,26 +1,26 @@
 class Solution {
   public:
-    int hIndex(vector<int>& ct) {
+    int hIndex(vector<int>& arr) {
         // code here
-        sort(ct.begin(),ct.end());
-        
-        int n=ct.size();
-        int maxi=-1;
-        int lo=0,hi=ct.back();
-        while(lo<=hi){
-            int mid=(lo+hi)>>1;
-            auto it=lower_bound(ct.begin(),ct.end(),mid);
-            if(it!=ct.end()){
-            int idx=it-ct.begin();
-            int cnt=n-idx;
-            if(cnt>=mid){
-                maxi=mid;
-                lo=mid+1;
-            }
-            else hi=mid-1;
-            }
-            else hi=mid-1;
+        int MAX=*max_element(arr.begin(),arr.end()) + 1;
+        int n=arr.size();
+        // sort(arr.begin(),arr.end());
+        // for(int i=n-1;i>=0;i--){
+        //     int rig= (n-i);
+        //     if(rig>=arr[i]) return arr[i];
+        // }
+        int mp[MAX];
+        memset(mp,0,sizeof(mp));
+        int cnt=0;
+       
+        for(int &i:arr) mp[i]++;
+        for(int i=MAX-1;i>=0;i--){
+            cnt+=mp[i];
+            if(cnt>=i) return i;
         }
-        return maxi;
+        return n;
+        
+        
+        
     }
 };
