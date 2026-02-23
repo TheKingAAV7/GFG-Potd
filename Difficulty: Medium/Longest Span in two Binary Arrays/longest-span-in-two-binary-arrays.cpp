@@ -1,19 +1,21 @@
 class Solution {
   public:
-    int longestCommonSum(vector<int> &arr1, vector<int> &arr2) {
-       int sum1=0,sum2=0,ans=0;
-       int n=arr1.size();
-        unordered_map<int,int>mp;
+    int equalSumSpan(vector<int> &a1, vector<int> &a2) {
+        // code here
+        int n=a1.size();
+        vector<int>v(n);
+        for(int i=0;i<n;i++) v[i]= a1[i]-a2[i];
+        
+        map<int,int>mp;
+        mp[0]=-1;
+        int ans=0;
+        int sm=0;
         for(int i=0;i<n;i++){
-            sum1 += arr1[i];
-            sum2 += arr2[i];
-            if(sum1==sum2)
-                ans = i+1;
-            if(mp.find(sum1-sum2)!=mp.end())
-                ans = max(ans,i-mp[sum1-sum2]);
-            else
-                mp[sum1-sum2] = i;
+            sm+=v[i];
+            if(mp.find(sm)!=mp.end()) ans=max(ans,i-mp[sm]);
+            else mp[sm]=i;
         }
         return ans;
+        
     }
 };
