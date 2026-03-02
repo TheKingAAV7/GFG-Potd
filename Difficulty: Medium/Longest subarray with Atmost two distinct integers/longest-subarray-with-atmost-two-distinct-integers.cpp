@@ -1,8 +1,9 @@
 class Solution {
   public:
     int totalElements(vector<int> &arr) {
+        // code here
         int n=arr.size();
-        int ans=1;
+        int ans=0;
         int l=0;
         map<int,int>mp;
         for(int i=0;i<n;i++){
@@ -15,6 +16,5 @@ class Solution {
             ans=max(ans,i-l+1);
         }
         return ans;
-        
     }
 };
