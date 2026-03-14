@@ -1,42 +1,48 @@
 /*
-struct Node
-{
+class Node {
+  public:
     int data;
     Node* left;
     Node* right;
+
+    Node(int val) {
+        data = val;
+        left = nullptr;
+        right = nullptr;
+    }
 };
 */
+
 class Solution {
   public:
-    // Function to return a list of nodes visible from the top view
-    // from left to right in Binary Tree.
     vector<int> topView(Node *root) {
-       
-       vector<array<int,2>>v;
-       unordered_map<int,int>mp;
-       queue<pair<Node*,int>>q;
-       q.push({root,0});
-      
-       while(!q.empty()){
-           Node* cur=q.front().first;
-           int wd=q.front().second;
-           q.pop();
-           if(mp.find(wd)==mp.end()){
-               mp[wd]=1;
-               v.push_back({cur->data,wd});
-           }
-           if(cur->left) {
-               q.push({cur->left,wd-1});
-           }
-           if(cur->right) q.push({cur->right,wd+1});
-       }
-       sort(v.begin(),v.end(),[&](array<int,2>&a, array<int,2>&b)->bool{
-          return a[1]<b[1]; 
-       });
-       vector<int>ans;
-       for(auto it:v) ans.push_back(it[0]);
-       return ans;
-       
+        // code here
+        vector<array<int,2>>v;
+        map<int,array<int,2>> mp;
+        
+        function<void(Node*,int,int)>f=[&](Node* root,int pos,int depth)->void{
+            if(!root) return ;
+            if(mp.find(pos)==mp.end()){
+                
+                mp[pos]={depth,root->data};
+            }
+            else{
+                if(mp[pos][0]>depth){
+                    mp[pos][1]=root->data;
+                    mp[pos][0]=depth;
+                }
+            }
+            f(root->left,pos-1,depth+1);
+            f(root->right,pos+1,depth+1);
+           
+            return;
+        };
+        
+        f(root,0,0);
+        sort(v.begin(),v.end());
+        vector<int>ans;
+        for(auto it:mp) ans.push_back({it.second[1]});
+        return ans;
         
     }
 };
