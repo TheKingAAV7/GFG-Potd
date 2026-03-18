@@ -12,31 +12,43 @@ struct Node {
 };*/
 
 class Solution {
-  public: // mini, maxi, cnt
-    vector<int> f(Node* root,int &ans){
-        if(!root) return {1e6,-1e6,0};
-        if(!root->left and !root->right) return {root->data, root->data,1};
-        vector<int>lef=f(root->left,ans);
-        vector<int>rig=f(root->right,ans);
-        int lef_max=lef[1];
-        int rig_min=rig[0];
-       
-        if(lef_max<root->data and rig_min>root->data){
-          //   cout<<root->data<<" "<<lef_max<<" "<<rig_min<<" "<<lef[2]+rig[2]+1<<endl;
-            ans=max(ans,lef[2]+rig[2]+1);
-              int mn = (lef[2] > 0 ? lef[0] : root->data);
-    int mx = (rig[2] > 0 ? rig[1] : root->data);
-    int sz=lef[2]+rig[2]+1;
-    return { mn, mx, sz };
-        }
-        return {-1e6,1e6,0};
-    }
-    int largestBst(Node *root) {
-       
-       int ans=1;
-      
-       f(root,ans);
-       return ans;
+  public:
+    int ans=0;
+    /*You are required to complete this method */
+    // Return the size of the largest sub-tree which is also a BST
+    /*
     
+    recursively check if the right min is greater than the current node
+    AND left largest is smaller than current
+    
+    for each node, i will need left maximum , right minimum 
+    and subtree size of both left node and right node
+    also remember that both the right subtree and left subtree must be a
+    bst
+    
+    
+    {isbst,size,min,max}
+    
+    Check for leaf node.
+    */
+    array<int,4> f(Node* root){
+        if(!root) return {1,0,INT_MAX,INT_MIN};
+        auto lef= f(root->left);
+        auto rig= f(root->right);
+        if(lef[0] and rig[0]){
+            if(lef[3]<root->data and root->data<rig[2]){ // maybe equals
+                int cur=lef[1]+rig[1]+1;
+                ans=max(ans,cur);
+                return {1,cur,min(root->data,lef[2]),max(rig[3],root->data)};
+            }
+        }
+        return {0,0,INT_MAX,INT_MIN};
+        
+    }
+    
+    int largestBst(Node *root) {
+        // Your code here
+        f(root);
+        return ans;
     }
 };
