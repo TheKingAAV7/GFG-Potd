@@ -1,78 +1,53 @@
-
-
-class Node{
- public:
- Node* left;
- Node* right;
- int data;
- Node(int data){
-     this->data=data;
-     this->left=NULL;
-     this->right=NULL;
- }
-};
-
-void bfs(Node* root, vector<int>&vec){
-    queue<Node*>q;
-    q.push(root);
-    while(!q.empty()){
-      int n=q.size();
-      for(int i=0;i<n;i++){
-          Node* tmp= q.front(); q.pop();
-          vec.push_back(tmp->data);
-          if(tmp->left) q.push(tmp->left);
-          if(tmp->right) q.push(tmp->right);
-      }
-    }
-    return ;
-}
-void f(Node* &root,int &d){
-    if(!root) return ;
-    
-    if(root->data<d){
-    if(!root->right){
-    root->right= new Node(d);
-    return;
-    }
-    else{
-    f(root->right,d);
-    }
-    }
-    else{
-    if(!root->left){
-        root->left= new Node(d); return;
-    }
-    else
-    f(root->left,d);
-    }
-    return;
-}
 class Solution {
   public:
     vector<int> countBSTs(vector<int>& arr) {
-        vector<set<vector<int>>>v(16);
-        vector<int>t1(arr.begin(),arr.end());
-        sort(arr.begin(),arr.end());
-        int n=arr.size();
-        do{
-            Node* root=new Node(arr[0]);
-            for(int i=1;i<n;i++){
-                f(root,arr[i]);
+        /*
+        
+         1 2 3 4 5 6 7 8 9
+                5
+              4    
+
+
+
+        1 2 3
+
+        
+        state -> there's a root with [0,n-1]
+        
+        f(i)+=(0,i-1)*f(i+1,n-1)
+        
+        f(i+1) f(i-1)
+        
+        */
+        
+        auto f= [&](auto &&self, int i, int lef, int rig)->int{
+            if(lef>rig) return 0;
+            if(lef==rig) return 1;
+            int tans1=0;
+            int tans2=0;
+            for(int j=lef;j<i;j++){
+                tans1+=self(self,j,lef,i-1);
             }
-            vector<int>bf;
-            bfs(root,bf);
-            // for(int i:arr) cout<<i<<" ";
-            // cout<<endl;
-            // for(int i:bf) cout<<i<<" ";
-            // cout<<endl;
-            v[arr[0]].insert(bf);
-            
-            
-        }while(next_permutation(arr.begin(),arr.end()));
-        vector<int>ans(n,0);
+            for(int j=i+1;j<=rig;j++){
+                tans2+=self(self,j,i+1,rig);
+            }
+            // cout<<tans1<<" "<<tans2<<endl;
+            if(tans2==0) return tans1;
+            if(tans1==0) return tans2;
+            return tans1*tans2;
+        };
+        int n=arr.size();
+        vector<array<int,2>>a;
+        for(int i=0;i<n;i++) a.push_back({arr[i],i});
+        sort(a.begin(),a.end());
+        vector<int>ans(n);
+       
         for(int i=0;i<n;i++){
-            ans[i]=v[t1[i]].size();
+            int cur= f(f,i,0,n-1);
+            
+            ans[a[i][1]]=cur;
         }
         return ans;
+        
     }
 };
