@@ -1,96 +1,46 @@
-//{ Driver Code Starts
-#include <bits/stdc++.h>
-using namespace std;
-
-
-// } Driver Code Ends
-
-
 class Solution {
-private:
-    vector<int>vx={-1,1,0,0};
-    vector<int>vy={0,0,-1,1};
-    
-    // Modified DFS to correctly handle rotting within k time
-    void dfs(int i, int j, int n, int m, vector<vector<int>>& mat, int k, vector<vector<int>>& vis) {
-        // If out of bounds, empty cell, or already visited with greater or equal remaining time
-        if(i < 0 || i >= n || j < 0 || j >= m || mat[i][j] == 0 || vis[i][j] >= k) return;
+  public:
+    int orangesRot(vector<vector<int>>& mat) {
+        // code here
         
-        vis[i][j] = k; // Mark with remaining time instead of just 1
-        
-        if(k > 0) { // Only continue if we have time remaining
-            for(int idx = 0; idx < 4; idx++) {
-                int nx = i + vx[idx];
-                int ny = j + vy[idx];
-                
-                if(nx >= 0 && nx < n && ny >= 0 && ny < m && mat[nx][ny] != 0) {
-                    dfs(nx, ny, n, m, mat, k-1, vis); // Decrement k as we go
-                }
-            }
-        }
-    }
- 
-public:
-int orangesRotting(vector<vector<int>>& mat) {
-        int n=mat.size(),m=mat[0].size();
-        queue<pair<int,int>>q;
+        int n=mat.size();
+        int m=mat[0].size();
+        // cost,i,j
+        int dx[4]={-1,1,0,0};
+        int dy[4]={0,0,-1,1};
+        queue<array<int,3>>q;
+        vector<vector<int>>vis(n,vector<int>(m,0));
         int fresh=0;
         for(int i=0;i<n;i++){
             for(int j=0;j<m;j++){
-                if(mat[i][j]==2) q.push({i,j});
-                else if(mat[i][j]) fresh++;
-            }
-        }
-        int time=0;
-        vector<vector<int>>vis(n,vector<int>(m));
-        vector<pair<int,int>>edge={{-1,0},{1,0},{0,-1},{0,1}};
-        while(!q.empty()){
-            int x=q.size();
-            time++;
-            while(x--){
-                auto r=q.front();
-                q.pop();
-                for(auto ch:edge){
-                    int a=r.first+ch.first,b=r.second+ch.second;
-                    if(a>=0 && a<n && b>=0 && b<m
-                        && vis[a][b]==0 && mat[a][b]==1){
-                            fresh--;
-                            q.push({a,b});
-                            vis[a][b]=1;
-                    }
+                if(mat[i][j]==1) fresh++;
+                else if(mat[i][j]==2){
+                vis[i][j]=1;
+                q.push({0,i,j});
                 }
             }
         }
-        if(fresh==0) return max(0,time-1);
-        return -1;
-    }
-
-
-};
-
-
-
-
-//{ Driver Code Starts.
-int main() {
-    int tc;
-    cin >> tc;
-    while (tc--) {
-        int n, m;
-        cin >> n >> m;
-        vector<vector<int>> mat(n, vector<int>(m, -1));
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                cin >> mat[i][j];
+        if(fresh==0) return 0;
+        while(!q.empty()){
+            auto cur= q.front();
+            q.pop();
+            int cost=cur[0];
+            int x=cur[1];
+            int y=cur[2];
+            if(mat[x][y]==1){
+                fresh--;
+                if(fresh==0) return cost;
+            }
+            for(int i=0;i<4;i++){
+                int nx= x+dx[i];
+                int ny= y+dy[i];
+                if(nx>=0 and nx<n and ny>=0 and ny<m and mat[nx][ny]==1 and vis[nx][ny]==0){
+                    q.push({cost+1,nx,ny});
+                    vis[nx][ny]=1;
+                }
             }
         }
-        Solution obj;
-        int ans = obj.orangesRotting(mat);
-        cout << ans << "\n";
-
-        cout << "~"
-             << "\n";
+        return -1;
+        
     }
-    return 0;
-}
-// } Driver Code Ends
+};
