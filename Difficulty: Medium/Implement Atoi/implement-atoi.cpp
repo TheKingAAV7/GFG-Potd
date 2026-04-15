@@ -1,54 +1,40 @@
-//{ Driver Code Starts
-#include <bits/stdc++.h>
-using namespace std;
-
-
-// } Driver Code Ends
 class Solution {
   public:
-    int myAtoi(char *s) {
-       int i = 0;
-    
-    // Skip leading spaces
-    while (s[i] == ' ') {
-        i++;
-    }
-
-    // Check for sign
-    bool sign = true;
-    if (s[i] == '-') {
-        sign = false;
-        i++;
-    }
-
-    int num = 0;
-    while (s[i] >= '0' && s[i] <= '9') {
-        int digit = s[i] - '0';
+    int myAtoi(string &s) {
+        // code here'
+        int n=s.length();
+        int i=0;
+        int num=0;
+        int neg=0;
+        int dig=0;
+        int mx=2147483647;
+        while(i<n and s[i]==' ')i++;
         
-        // Handle overflow and underflow
-        if (num > INT_MAX / 10 || (num == INT_MAX / 10 && digit > INT_MAX % 10)) {
-            return sign ? INT_MAX : INT_MIN;
+        if(i>=n) return 0;
+        if(s[i]=='-' || s[i]=='+'){
+            // cout<<"es"<<endl;
+        neg= (s[i]=='-');
+        i++;
+        if(i>=n) return 0;
         }
 
-        num = num * 10 + digit;
-        i++;
-    }
+        // cout<<neg<<endl;
 
-    return sign ? num : -num;
+        while(i<n and s[i]>='0' and s[i]<='9'){
+            int cur=s[i]-'0';
+            if(num>=(mx-cur)/10 ){
+                if(neg) return -2147483648;
+                else return 2147483647;
+            }
+            else{
+                num=(num*10)+cur;
+            }
+            dig=1;
+            i++;
+        }
+        if(dig==0) return 0;
+        if(neg) return -1*num;
+        return num;
+        
     }
 };
-
-//{ Driver Code Starts.
-int main() {
-    int t;
-    cin >> t;
-    while (t--) {
-        char s[20];
-        cin >> s;
-        Solution ob;
-        int ans = ob.myAtoi(s);
-        cout << ans << endl;
-        cout << "~" << endl;
-    }
-}
-// } Driver Code Ends
