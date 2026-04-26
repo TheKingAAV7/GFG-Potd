@@ -1,48 +1,20 @@
-//{ Driver Code Starts
-#include <bits/stdc++.h>
-using namespace std;
-
-
-// } Driver Code Ends
-// User function Template for C++
-
 class Solution {
   public:
     int smallestSubstring(string s) {
-        int one=0, two=0, zero=0;
-        int left=0;
-        int ans=INT_MAX;
-        int n=s.size();
-        for(int right=0;right<n;right++){
-            if(s[right]=='0') zero++;
-            else if(s[right]=='1') one++;
-            else two++;
-            while(left<right and one>=1 and zero>=1 and two>=1){
-                ans= min(ans, right-left+1);
-                if(s[left]=='0') zero--;
-                else if(s[left]=='1') one--;
-                else two--;
-                left++;
-            }
-            
+        // code here
+        int n= s.length();
+        int mp[3]={0,0,0};
+        int ans=n+1;
+        int l=0;
+        for(int i=0;i<n;i++){
+         mp[s[i]-'0']++;
+         while(mp[0]>=1 and mp[1]>=1 and mp[2]>=1){
+             ans=min(ans,i-l+1);
+             mp[s[l]-'0']--;
+             l++;
+         }
         }
-        if(ans==INT_MAX) return -1;
-        return ans;
+        return ans==(n+1)?-1:ans;
+        
     }
 };
-
-
-//{ Driver Code Starts.
-
-int main() {
-    int t;
-    cin >> t;
-    while (t--) {
-        string S;
-        cin >> S;
-        Solution ob;
-        cout << ob.smallestSubstring(S);
-        cout << endl;
-    }
-}
-// } Driver Code Ends
