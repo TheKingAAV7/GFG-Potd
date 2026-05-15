@@ -1,45 +1,34 @@
-//{ Driver Code Starts
-// Initial template for C++
-
-#include <bits/stdc++.h>
-using namespace std;
-
-
-// } Driver Code Ends
-// User function template for C++
- 
 class Solution {
   public:
-    long long findSmallest(vector<int> &arr) {
-        int total=1;
-        for(int i:arr){
-            if(total>=i) total+=i;
-            else break;
+    int findSmallest(vector<int> &arr) {
+        /*
+        
+        
+        1 2 4
+        
+        
+        
+        always check for smallest possible some, extend to the largest
+        
+        1 2 4
+        
+        1 2 3
+        
+    0   1 2 3 
+        
+         
+        1 
+        */
+        sort(arr.begin(),arr.end());
+        int lo=0,hi=0;
+        
+        int n= arr.size();
+        for(int i=0;i<n;i++){
+            if(arr[i]-hi>1) return hi+1;
+            
+            hi=hi+arr[i];
+            // cout<<hi<<endl;
         }
-        return total;
-    }   // 1 2 3
-};
-
-//{ Driver Code Starts.
-int main() {
-    int t;
-    cin >> t;
-    cin.ignore();
-    while (t--) {
-        string input;
-        getline(cin, input);
-        stringstream ss(input);
-        vector<int> arr;
-        int num;
-        while (ss >> num) {
-            arr.push_back(num);
-        }
-
-        Solution ob;
-        auto ans = ob.findSmallest(arr);
-        cout << ans << "\n";
+        return hi+1;
     }
-    return 0;
-}
-
-// } Driver Code Ends
+};
